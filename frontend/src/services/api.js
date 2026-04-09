@@ -87,4 +87,5 @@ export const movementAPI = {
   getAll: () => fetchAPI('/racks/movements/all')
 };
 
-export default { productAPI, rackAPI, movementAPI };
+const api = { productAPI, rackAPI, movementAPI };
+export default api;

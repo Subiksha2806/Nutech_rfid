@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { productAPI, movementAPI } from '../services/api';
+import QRCodeDisplay from './QRCodeDisplay';
 
 /**
  * Product List Component
@@ -57,6 +58,9 @@ function ProductList({ onBack }) {
 
     return matchesSearch && matchesStatus;
   });
+
+  // QR Code Modal State
+  const [selectedProductForQR, setSelectedProductForQR] = useState(null);
 
   // Format date
   const formatDate = (dateString) => {
@@ -156,12 +160,13 @@ function ProductList({ onBack }) {
                   <th>Rack</th>
                   <th>Status</th>
                   <th>Manufacture Date</th>
+                  <th>QR Code</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredProducts.length === 0 ? (
                   <tr>
-                    <td colSpan="6" className="no-data">No products found</td>
+                    <td colSpan="7" className="no-data">No products found</td>
                   </tr>
                 ) : (
                   filteredProducts.map((product) => (
@@ -179,6 +184,15 @@ function ProductList({ onBack }) {
                         </span>
                       </td>
                       <td>{formatDate(product.manufactureDate)}</td>
+                      <td>
+                        <button 
+                          className="qr-generate-btn"
+                          onClick={() => setSelectedProductForQR(product)}
+                          title="Generate QR Code"
+                        >
+                          📱
+                        </button>
+                      </td>
                     </tr>
                   ))
                 )}
@@ -229,6 +243,17 @@ function ProductList({ onBack }) {
       <button className="btn-secondary" onClick={onBack}>
         ← Back to Dashboard
       </button>
+
+      {/* QR Code Modal */}
+      {selectedProductForQR && (
+        <QRCodeDisplay
+          product={selectedProductForQR}
+          onClose={() => setSelectedProductForQR(null)}
+          onDownload={(product) => {
+            console.log('QR Code downloaded for:', product.productId);
+          }}
+        />
+      )}
     </div>
   );
 }
